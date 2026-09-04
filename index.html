@@ -266,14 +266,19 @@
             display: none
         }
 
-        .dialog {
-            width: min(560px, 100%);
-            background: var(--card);
-            border: 1px solid var(--line);
-            border-radius: 22px;
-            padding: 21px;
-            box-shadow: 0 24px 80px #0007
-        }
+.dialog {
+    width:min(560px,100%);
+    max-height:90vh;
+    overflow-y:auto;
+
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:22px;
+
+    padding:21px;
+
+    box-shadow:0 24px 80px #0007;
+}
 
         .dialog label {
             display: block;
@@ -306,37 +311,62 @@
             color: var(--muted);
             font-size: 13px
         }
+@media(max-width:800px){
 
-        @media(max-width:800px) {
-            .grid {
-                grid-template-columns: 1fr
-            }
+    .grid{
+        grid-template-columns:1fr;
+    }
 
-            .sticky {
-                position: static
-            }
+    .sticky{
+        position:static;
+    }
 
-            .head {
-                display: block
-            }
+    .head{
+        display:block;
+    }
 
-            .actions {
-                justify-content: start;
-                margin-top: 12px
-            }
+    .actions{
+        justify-content:start;
+        margin-top:12px;
+        overflow-x:auto;
+        flex-wrap:nowrap;
+    }
 
-            .wrap {
-                padding: 13px
-            }
+    .wrap{
+        padding:12px;
+    }
 
-            .row.mobile-stack {
-                display: grid
-            }
+    .btn{
+        min-height:48px;
+    }
 
-            .btn {
-                min-height: 44px
-            }
-        }
+    .setup{
+        padding:0;
+        align-items:end;
+    }
+
+    .dialog{
+        width:100%;
+        max-width:none;
+
+        height:85vh;
+
+        border-radius:
+            24px 24px 0 0;
+
+        padding:
+            24px
+            20px
+            100px;
+
+        overflow-y:auto;
+    }
+
+    .row.mobile-stack{
+        display:grid;
+    }
+}
+
     </style>
 </head>
 
@@ -459,15 +489,26 @@ $('settingsBtn').onclick = () => {
     $('branchInput').value =
         cfg.branch || 'main';
 
-    $('tokenInput').value = '';
+$('tokenInput').value = '';
 
-    $('setup').classList.remove('hidden');
+$('setup').classList.remove('hidden');
+
+setTimeout(
+    () => $('tokenInput').focus(),
+    100
+);
+
+    
 
 };
  $('closeSetup').onclick = () => $('setup').classList.add('hidden'); $('connectBtn').onclick = () => {saveCfg(); pullGitHub(true)}; $('forgetBtn').onclick = () => {localStorage.removeItem('commonplace-github-config'); githubToken = ''; cfg = {}; sha = null; $('tokenInput').value = ''; setStatus('Token forgotten. Local data remains.'); $('setup').classList.add('hidden')}; $('pullBtn').onclick = () => {if (dirty && !confirm('Pulling will replace unsaved local changes. Continue?')) return; pullGitHub()}; $('pushBtn').onclick = () => pushGitHub();
         $('themeBtn').onclick = () => {document.body.classList.toggle('dark'); localStorage.setItem('cp-dark', document.body.classList.contains('dark')); $('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'}; if (localStorage.getItem('cp-dark') === 'true') {document.body.classList.add('dark'); $('themeBtn').textContent = '☀️'}
         setInterval(() => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')}, 60000); document.addEventListener('visibilitychange', () => {if (document.visibilityState === 'hidden' && dirty && githubToken) pushGitHub('Autosave Commonplace')}); window.addEventListener('pagehide', () => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')});
-        render(); setStatus('Session token required. Click ⚙ GitHub.');
+render();
+
+setStatus(
+    '🔒 Local cache loaded. Connect GitHub when you want to sync.'
+);
     </script>
 </body>
 
