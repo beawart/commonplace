@@ -407,29 +407,29 @@
         const STORE = 'commonplace-github-v1';
         let state = JSON.parse(localStorage.getItem(STORE) || 'null') || {version: 1, books: [], ideas: [], updatedAt: null};
         let selected = state.books[0]?.id || null, sha = null, dirty = false, saving = false;
-        let cfg=JSON.parse(localStorage.getItem('commonplace-github-config') ||'{}');
+        let cfg = JSON.parse(localStorage.getItem('commonplace-github-config') || '{}');
         let githubToken = '';
         function localSave(mark = true) {state.updatedAt = new Date().toISOString(); localStorage.setItem(STORE, JSON.stringify(state)); if (mark) {dirty = true; setStatus('Unsaved changes', '')} }
-        function saveCfg(){
+        function saveCfg() {
 
- githubToken =
-   $('tokenInput').value.trim();
+            githubToken =
+                $('tokenInput').value.trim();
 
- cfg={
-   owner:$('ownerInput').value.trim(),
-   repo:$('repoInput').value.trim(),
-   path:$('pathInput').value.trim()
-        ||'commonplace-data.json',
-   branch:$('branchInput').value.trim()
-        ||'main'
- };
+            cfg = {
+                owner: $('ownerInput').value.trim(),
+                repo: $('repoInput').value.trim(),
+                path: $('pathInput').value.trim()
+                    || 'commonplace-data.json',
+                branch: $('branchInput').value.trim()
+                    || 'main'
+            };
 
- localStorage.setItem(
-   'commonplace-github-config',
-   JSON.stringify(cfg)
- );
+            localStorage.setItem(
+                'commonplace-github-config',
+                JSON.stringify(cfg)
+            );
 
-}
+        }
         function setStatus(text, kind = '') {$('statusText').textContent = text; $('status').className = 'status ' + kind}
         function b64encode(s) {const bytes = new TextEncoder().encode(s); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin)}
         function b64decode(s) {const bin = atob(s.replace(/\n/g, '')), bytes = Uint8Array.from(bin, c => c.charCodeAt(0)); return new TextDecoder().decode(bytes)}
@@ -445,7 +445,26 @@
         function addIdea() {const text = $('ideaInput').value.trim(); if (!text || !selected) return; state.ideas.unshift({id: uid(), book: selected, text, fav: false, createdAt: new Date().toISOString()}); $('ideaInput').value = ''; localSave(); render()} $('ideaBtn').onclick = addIdea; $('ideaInput').onkeydown = e => {if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) addIdea()};
         $('ideas').onclick = e => {const id = e.target.closest('[data-id]')?.dataset.id, i = state.ideas.find(x => x.id === id); if (!i) return; if (e.target.closest('.fav')) i.fav = !i.fav; else if (e.target.closest('.edit')) {const t = prompt('Edit idea', i.text); if (!t?.trim()) return; i.text = t.trim()} else if (e.target.closest('.remove')) {if (!confirm('Delete this idea?')) return; state.ideas = state.ideas.filter(x => x.id !== id)} localSave(); render()};
         $('search').oninput = render; $('surpriseBtn').onclick = () => {if (!state.ideas.length) return; const i = state.ideas[Math.floor(Math.random() * state.ideas.length)], b = state.books.find(x => x.id === i.book); $('randomText').textContent = `“${i.text}”\n— ${b?.name || 'Book'}`};
-        $('settingsBtn').onclick = () => {for (const [id, key] of [['ownerInput', 'owner'], ['repoInput', 'repo'], ['pathInput', 'path'], ['branchInput', 'branch']]) $('tokenInput').value=''; $(id).value = cfg[key] || ($(id).value || ''); $('setup').classList.remove('hidden')}; $('closeSetup').onclick = () => $('setup').classList.add('hidden'); $('connectBtn').onclick = () => {saveCfg(); pullGitHub(true)}; $('forgetBtn').onclick = () => {localStorage.removeItem('commonplace-github-config'); githubToken=''; cfg = {}; sha = null; $('tokenInput').value = ''; setStatus('Token forgotten. Local data remains.'); $('setup').classList.add('hidden')}; $('pullBtn').onclick = () => {if (dirty && !confirm('Pulling will replace unsaved local changes. Continue?')) return; pullGitHub()}; $('pushBtn').onclick = () => pushGitHub();
+        $('settingsBtn').onclick = () => {
+
+    for (const [id, key] of [
+        ['ownerInput', 'owner'],
+        ['repoInput', 'repo'],
+        ['pathInput', 'path'],
+        ['branchInput', 'branch']
+    ]) {
+
+        $(id).value =
+            cfg[key] ||
+            '';
+
+    }
+
+    $('tokenInput').value = '';
+
+    $('setup').classList.remove('hidden');
+
+}; $('closeSetup').onclick = () => $('setup').classList.add('hidden'); $('connectBtn').onclick = () => {saveCfg(); pullGitHub(true)}; $('forgetBtn').onclick = () => {localStorage.removeItem('commonplace-github-config'); githubToken = ''; cfg = {}; sha = null; $('tokenInput').value = ''; setStatus('Token forgotten. Local data remains.'); $('setup').classList.add('hidden')}; $('pullBtn').onclick = () => {if (dirty && !confirm('Pulling will replace unsaved local changes. Continue?')) return; pullGitHub()}; $('pushBtn').onclick = () => pushGitHub();
         $('themeBtn').onclick = () => {document.body.classList.toggle('dark'); localStorage.setItem('cp-dark', document.body.classList.contains('dark')); $('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'}; if (localStorage.getItem('cp-dark') === 'true') {document.body.classList.add('dark'); $('themeBtn').textContent = '☀️'}
         setInterval(() => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')}, 60000); document.addEventListener('visibilitychange', () => {if (document.visibilityState === 'hidden' && dirty && githubToken) pushGitHub('Autosave Commonplace')}); window.addEventListener('pagehide', () => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')});
         render(); setStatus('Session token required. Click ⚙ GitHub.');
