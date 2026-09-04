@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="#f5f3ee">
+    <title>Commonplace</title>
+    <style>
+        :root {
+            --bg: #f5f3ee;
+            --card: #fffdf9;
+            --soft: #f1ede6;
+            --text: #292b2f;
+            --muted: #737981;
+            --line: #e0dad0;
+            --accent: #6f8d78;
+            --accent2: #c79f88;
+            --good: #527a5b;
+            --bad: #a85858;
+            --shadow: 0 12px 34px #55483814
+        }
+
+        body.dark {
+            --bg: #15181d;
+            --card: #20242a;
+            --soft: #292e35;
+            --text: #f2f3f5;
+            --muted: #abb2bc;
+            --line: #383e47;
+            --accent: #9fc0a7;
+            --accent2: #9d819f;
+            --good: #94c59f;
+            --bad: #e39a9a;
+            --shadow: 0 14px 38px #0005
+        }
+
+        * {
+            box-sizing: border-box
+        }
+
+        body {
+            margin: 0;
+            background: radial-gradient(circle at 0 0, color-mix(in srgb, var(--accent) 20%, transparent), transparent 32rem), var(--bg);
+            color: var(--text);
+            font: 15px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif;
+            transition: .2s
+        }
+
+        .wrap {
+            max-width: 1120px;
+            margin: auto;
+            padding: 20px
+        }
+
+        .hero,
+        .card {
+            background: color-mix(in srgb, var(--card) 94%, transparent);
+            border: 1px solid var(--line);
+            box-shadow: var(--shadow);
+            border-radius: 22px
+        }
+
+        .hero {
+            padding: 20px
+        }
+
+        .head {
+            display: flex;
+            justify-content: space-between;
+            gap: 14px;
+            align-items: start
+        }
+
+        .head h1 {
+            margin: 0;
+            font-size: clamp(1.55rem, 4vw, 2rem)
+        }
+
+        .head p {
+            margin: 4px 0;
+            color: var(--muted)
+        }
+
+        .actions {
+            display: flex;
+            gap: 7px;
+            flex-wrap: wrap;
+            justify-content: end
+        }
+
+        .btn,
+        .icon {
+            border: 0;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700
+        }
+
+        .btn {
+            padding: 11px 14px;
+            background: linear-gradient(135deg, var(--accent), var(--accent2));
+            color: white
+        }
+
+        .btn.secondary {
+            background: var(--soft);
+            color: var(--text);
+            border: 1px solid var(--line)
+        }
+
+        .icon {
+            padding: 8px;
+            background: transparent;
+            color: var(--muted)
+        }
+
+        .status {
+            margin-top: 14px;
+            padding: 10px 12px;
+            border-radius: 12px;
+            background: var(--soft);
+            color: var(--muted);
+            display: flex;
+            gap: 8px;
+            align-items: center
+        }
+
+        .dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #b6a26b
+        }
+
+        .status.good .dot {
+            background: var(--good)
+        }
+
+        .status.bad .dot {
+            background: var(--bad)
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.35fr) minmax(280px, .65fr);
+            gap: 18px;
+            margin-top: 18px
+        }
+
+        .card {
+            padding: 18px;
+            margin-bottom: 16px
+        }
+
+        h2,
+        h3 {
+            margin: 0 0 12px
+        }
+
+        .row {
+            display: flex;
+            gap: 8px
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--line);
+            border-radius: 12px;
+            background: var(--card);
+            color: var(--text);
+            outline: none
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical
+        }
+
+        .list {
+            display: grid;
+            gap: 9px;
+            margin-top: 12px
+        }
+
+        .item {
+            padding: 12px;
+            border: 1px solid var(--line);
+            background: var(--soft);
+            border-radius: 14px
+        }
+
+        .book {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            cursor: pointer;
+            border-left: 4px solid transparent
+        }
+
+        .book.active {
+            border-left-color: var(--accent)
+        }
+
+        .grow {
+            flex: 1;
+            min-width: 0
+        }
+
+        .title {
+            font-weight: 750;
+            overflow: hidden;
+            text-overflow: ellipsis
+        }
+
+        .idea p {
+            white-space: pre-wrap;
+            margin: 10px 0
+        }
+
+        .pill {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 999px;
+            background: color-mix(in srgb, var(--accent) 20%, var(--card));
+            color: var(--accent);
+            font-size: 12px
+        }
+
+        .tools {
+            display: flex;
+            gap: 2px
+        }
+
+        .empty {
+            color: var(--muted);
+            padding: 24px;
+            text-align: center
+        }
+
+        .sticky {
+            position: sticky;
+            top: 12px
+        }
+
+        .quote {
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            color: var(--muted);
+            white-space: pre-wrap
+        }
+
+        .setup {
+            position: fixed;
+            inset: 0;
+            background: #111a;
+            display: grid;
+            place-items: center;
+            padding: 18px;
+            z-index: 20
+        }
+
+        .setup.hidden {
+            display: none
+        }
+
+        .dialog {
+            width: min(560px, 100%);
+            background: var(--card);
+            border: 1px solid var(--line);
+            border-radius: 22px;
+            padding: 21px;
+            box-shadow: 0 24px 80px #0007
+        }
+
+        .dialog label {
+            display: block;
+            margin: 11px 0 5px;
+            font-weight: 700
+        }
+
+        .dialog small {
+            color: var(--muted)
+        }
+
+        .dialog .row {
+            margin-top: 16px
+        }
+
+        .warning {
+            background: color-mix(in srgb, #e0b85b 20%, var(--card));
+            padding: 10px;
+            border-radius: 12px;
+            color: var(--text);
+            margin: 10px 0
+        }
+
+        .savebar {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-top: 12px;
+            color: var(--muted);
+            font-size: 13px
+        }
+
+        @media(max-width:800px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+
+            .sticky {
+                position: static
+            }
+
+            .head {
+                display: block
+            }
+
+            .actions {
+                justify-content: start;
+                margin-top: 12px
+            }
+
+            .wrap {
+                padding: 13px
+            }
+
+            .row.mobile-stack {
+                display: grid
+            }
+
+            .btn {
+                min-height: 44px
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="wrap">
+        <section class="hero">
+            <div class="head">
+                <div>
+                    <h1>📚 Commonplace</h1>
+                    <p>A cozy personal library of ideas worth remembering.</p>
+                </div>
+                <div class="actions"><button class="btn secondary" id="settingsBtn">⚙ GitHub</button><button
+                        class="btn secondary" id="pullBtn">↓ Pull</button><button class="btn secondary" id="pushBtn">↑
+                        Save now</button><button class="btn secondary" id="themeBtn">🌙</button></div>
+            </div>
+            <div class="status" id="status"><span class="dot"></span><span id="statusText">Local mode</span></div>
+        </section>
+        <div class="grid">
+            <main>
+                <section class="card">
+                    <h3>Books</h3>
+                    <form class="row" id="bookForm"><input id="bookInput" placeholder="Add a book" maxlength="140"
+                            required><button class="btn">+</button></form>
+                    <div class="list" id="books"></div>
+                </section>
+                <section class="card">
+                    <h3 id="selectedTitle">💡 Select a book</h3><textarea id="ideaInput"
+                        placeholder="Capture an idea or thought..."></textarea>
+                    <div class="savebar"><span>Ctrl/Cmd + Enter to save</span><button class="btn" id="ideaBtn">Save
+                            idea</button></div>
+                    <div class="list" id="ideas"></div>
+                </section>
+            </main>
+            <aside class="sticky">
+                <section class="card">
+                    <h3>🔎 Find a thought</h3><input id="search" placeholder="Search books and ideas..."><br><br><button
+                        class="btn" id="surpriseBtn">🎲 Surprise me</button>
+                    <p class="quote" id="randomText">A random saved idea will appear here.</p>
+                </section>
+                <section class="card">
+                    <h3>⭐ Favorites</h3>
+                    <div class="list" id="favorites"></div>
+                </section>
+            </aside>
+        </div>
+    </div>
+    <div class="setup hidden" id="setup">
+        <div class="dialog">
+            <h2>Connect private GitHub data</h2>
+            <p>Enter the private repository details. The app reads and updates one JSON file through GitHub's Contents
+                API.</p>
+            <div class="warning"><b>Security:</b> the token remains in this browser's localStorage. Never put the token
+                into this public HTML or commit it to GitHub. Use a fine-grained token limited only to the private data
+                repository.</div><label>GitHub owner / username</label><input id="ownerInput"
+                placeholder="your-github-username"><label>Private repository</label><input id="repoInput"
+                value="commonplace-data"><label>Data file path</label><input id="pathInput"
+                value="commonplace-data.json"><label>Branch</label><input id="branchInput"
+                value="main"><label>Fine-grained personal access token</label><input id="tokenInput" type="password"
+                placeholder="github_pat_..."><small>Required repository permission: Contents, read and write.</small>
+            <div class="row mobile-stack"><button class="btn" id="connectBtn">Connect and load</button><button
+                    class="btn secondary" id="closeSetup">Cancel</button><button class="btn secondary"
+                    id="forgetBtn">Forget token</button></div>
+        </div>
+    </div>
+    <script>
+        const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"']/g, c => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'}[c]));
+        const uid = () => crypto.randomUUID?.() || Date.now().toString(36) + Math.random().toString(36).slice(2);
+        const STORE = 'commonplace-github-v1';
+        let state = JSON.parse(localStorage.getItem(STORE) || 'null') || {version: 1, books: [], ideas: [], updatedAt: null};
+        let selected = state.books[0]?.id || null, sha = null, dirty = false, saving = false;
+        let cfg=JSON.parse(localStorage.getItem('commonplace-github-config') ||'{}');
+        let githubToken = '';
+        function localSave(mark = true) {state.updatedAt = new Date().toISOString(); localStorage.setItem(STORE, JSON.stringify(state)); if (mark) {dirty = true; setStatus('Unsaved changes', '')} }
+        function saveCfg(){
+
+ githubToken =
+   $('tokenInput').value.trim();
+
+ cfg={
+   owner:$('ownerInput').value.trim(),
+   repo:$('repoInput').value.trim(),
+   path:$('pathInput').value.trim()
+        ||'commonplace-data.json',
+   branch:$('branchInput').value.trim()
+        ||'main'
+ };
+
+ localStorage.setItem(
+   'commonplace-github-config',
+   JSON.stringify(cfg)
+ );
+
+}
+        function setStatus(text, kind = '') {$('statusText').textContent = text; $('status').className = 'status ' + kind}
+        function b64encode(s) {const bytes = new TextEncoder().encode(s); let bin = ''; bytes.forEach(b => bin += String.fromCharCode(b)); return btoa(bin)}
+        function b64decode(s) {const bin = atob(s.replace(/\n/g, '')), bytes = Uint8Array.from(bin, c => c.charCodeAt(0)); return new TextDecoder().decode(bytes)}
+        function apiUrl() {return `https://api.github.com/repos/${encodeURIComponent(cfg.owner)}/${encodeURIComponent(cfg.repo)}/contents/${cfg.path.split('/').map(encodeURIComponent).join('/')}?ref=${encodeURIComponent(cfg.branch)}`}
+        function headers() {return {'Accept': 'application/vnd.github+json', 'Authorization': `Bearer ${githubToken}`, 'X-GitHub-Api-Version': '2022-11-28', 'Content-Type': 'application/json'}}
+        async function pullGitHub(initial = false) {if (!cfg.owner || !cfg.repo || !githubToken) {$('setup').classList.remove('hidden'); return } setStatus('Connecting to GitHub…'); try {const r = await fetch(apiUrl(), {headers: headers()}); if (r.status === 404) {sha = null; if (initial) {await pushGitHub('Create commonplace data'); return } throw new Error('Data file not found. Use Save now to create it.')} if (!r.ok) throw new Error(`${r.status} ${await r.text()}`); const d = await r.json(), remote = JSON.parse(b64decode(d.content)); if (!Array.isArray(remote.books) || !Array.isArray(remote.ideas)) throw new Error('The JSON file has an unexpected format.'); state = remote; sha = d.sha; selected = state.books[0]?.id || null; dirty = false; localSave(false); render(); setStatus('Synced from GitHub', 'good'); $('setup').classList.add('hidden')} catch (e) {setStatus('GitHub error: ' + friendly(e.message), 'bad'); if (initial) alert('Could not connect. ' + friendly(e.message))} }
+        async function pushGitHub(message = 'Update Commonplace') {if (!cfg.owner || !cfg.repo || !githubToken) {$('setup').classList.remove('hidden'); return } if (saving) return; saving = true; setStatus('Saving to GitHub…'); try {if (!sha) {const g = await fetch(apiUrl(), {headers: headers()}); if (g.ok) sha = (await g.json()).sha; else if (g.status !== 404) throw new Error(`${g.status} ${await g.text()}`)} const body = {message, content: b64encode(JSON.stringify(state, null, 2)), branch: cfg.branch}; if (sha) body.sha = sha; const r = await fetch(apiUrl().replace(/\?ref=.*$/, ''), {method: 'PUT', headers: headers(), body: JSON.stringify(body)}); if (!r.ok) throw new Error(`${r.status} ${await r.text()}`); const d = await r.json(); sha = d.content?.sha || null; dirty = false; localSave(false); setStatus('Saved to private GitHub repo', 'good')} catch (e) {setStatus('Save failed: ' + friendly(e.message), 'bad')} finally {saving = false} }
+        function friendly(x) {if (x.includes('401')) return 'Token is invalid or expired.'; if (x.includes('403')) return 'Token does not have access, or repository rules blocked the update.'; if (x.includes('404')) return 'Repository or file was not found. Check owner, repository, path, and token access.'; if (x.includes('409')) return 'The file changed elsewhere. Pull the latest copy, then save again.'; return x.slice(0, 220)}
+        function render() {const q = $('search').value.trim().toLowerCase(), book = state.books.find(b => b.id === selected); $('selectedTitle').textContent = '💡 ' + (book?.name || 'Select a book'); $('books').innerHTML = state.books.length ? state.books.map(b => `<div class="item book ${b.id === selected ? 'active' : ''}" data-book="${b.id}"><span>📖</span><div class="grow title">${esc(b.name)}</div><small>${state.ideas.filter(i => i.book === b.id).length}</small><div class="tools"><button class="icon rename">✎</button><button class="icon delete">×</button></div></div>`).join('') : '<div class="empty">Add your first book.</div>'; let rows = state.ideas.filter(i => q ? ((i.text + ' ' + (state.books.find(b => b.id === i.book)?.name || '')).toLowerCase().includes(q)) : i.book === selected); $('ideas').innerHTML = rows.length ? rows.map(i => ideaHTML(i)).join('') : '<div class="empty">No ideas found.</div>'; $('favorites').innerHTML = state.ideas.filter(i => i.fav).map(i => `<div class="item"><span class="pill">${esc(state.books.find(b => b.id === i.book)?.name || 'Book')}</span><p>${esc(i.text)}</p></div>`).join('') || '<small>No favorites yet.</small>'}
+        function ideaHTML(i) {return `<div class="item idea"><span class="pill">${esc(state.books.find(b => b.id === i.book)?.name || 'Book')}</span><p>${esc(i.text)}</p><div class="tools"><button class="icon fav" data-id="${i.id}">${i.fav ? '★' : '☆'}</button><button class="icon edit" data-id="${i.id}">✎</button><button class="icon remove" data-id="${i.id}">×</button></div></div>`}
+        $('bookForm').onsubmit = e => {e.preventDefault(); const name = $('bookInput').value.trim(); if (!name) return; const b = {id: uid(), name}; state.books.push(b); selected = b.id; $('bookInput').value = ''; localSave(); render()};
+        $('books').onclick = e => {const row = e.target.closest('[data-book]'); if (!row) return; const id = row.dataset.book, b = state.books.find(x => x.id === id); if (e.target.closest('.rename')) {const n = prompt('Rename book', b.name); if (n?.trim()) {b.name = n.trim(); localSave(); render()} return } if (e.target.closest('.delete')) {if (confirm(`Delete “${b.name}” and all its ideas?`)) {state.books = state.books.filter(x => x.id !== id); state.ideas = state.ideas.filter(x => x.book !== id); selected = state.books[0]?.id || null; localSave(); render()} return } selected = id; $('search').value = ''; render()};
+        function addIdea() {const text = $('ideaInput').value.trim(); if (!text || !selected) return; state.ideas.unshift({id: uid(), book: selected, text, fav: false, createdAt: new Date().toISOString()}); $('ideaInput').value = ''; localSave(); render()} $('ideaBtn').onclick = addIdea; $('ideaInput').onkeydown = e => {if (e.key === 'Enter' && (e.ctrlKey || e.metaKey)) addIdea()};
+        $('ideas').onclick = e => {const id = e.target.closest('[data-id]')?.dataset.id, i = state.ideas.find(x => x.id === id); if (!i) return; if (e.target.closest('.fav')) i.fav = !i.fav; else if (e.target.closest('.edit')) {const t = prompt('Edit idea', i.text); if (!t?.trim()) return; i.text = t.trim()} else if (e.target.closest('.remove')) {if (!confirm('Delete this idea?')) return; state.ideas = state.ideas.filter(x => x.id !== id)} localSave(); render()};
+        $('search').oninput = render; $('surpriseBtn').onclick = () => {if (!state.ideas.length) return; const i = state.ideas[Math.floor(Math.random() * state.ideas.length)], b = state.books.find(x => x.id === i.book); $('randomText').textContent = `“${i.text}”\n— ${b?.name || 'Book'}`};
+        $('settingsBtn').onclick = () => {for (const [id, key] of [['ownerInput', 'owner'], ['repoInput', 'repo'], ['pathInput', 'path'], ['branchInput', 'branch']]) $('tokenInput').value=''; $(id).value = cfg[key] || ($(id).value || ''); $('setup').classList.remove('hidden')}; $('closeSetup').onclick = () => $('setup').classList.add('hidden'); $('connectBtn').onclick = () => {saveCfg(); pullGitHub(true)}; $('forgetBtn').onclick = () => {localStorage.removeItem('commonplace-github-config'); githubToken=''; cfg = {}; sha = null; $('tokenInput').value = ''; setStatus('Token forgotten. Local data remains.'); $('setup').classList.add('hidden')}; $('pullBtn').onclick = () => {if (dirty && !confirm('Pulling will replace unsaved local changes. Continue?')) return; pullGitHub()}; $('pushBtn').onclick = () => pushGitHub();
+        $('themeBtn').onclick = () => {document.body.classList.toggle('dark'); localStorage.setItem('cp-dark', document.body.classList.contains('dark')); $('themeBtn').textContent = document.body.classList.contains('dark') ? '☀️' : '🌙'}; if (localStorage.getItem('cp-dark') === 'true') {document.body.classList.add('dark'); $('themeBtn').textContent = '☀️'}
+        setInterval(() => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')}, 60000); document.addEventListener('visibilitychange', () => {if (document.visibilityState === 'hidden' && dirty && githubToken) pushGitHub('Autosave Commonplace')}); window.addEventListener('pagehide', () => {if (dirty && githubToken) pushGitHub('Autosave Commonplace')});
+        render(); setStatus('Session token required. Click ⚙ GitHub.');
+    </script>
+</body>
+
+</html>
